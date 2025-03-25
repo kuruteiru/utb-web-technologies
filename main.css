@@ -1,0 +1,107 @@
+:root {
+	--bgc: black;
+	--fgc: white;
+}
+
+* {
+	font-family: Arial, sans-serif;
+	scroll-behavior: smooth;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body {
+	/*background: var(--bgc);*/
+	background: black;
+	color: var(--fgc);
+}
+
+header {
+	position: fixed;
+	top: 0;
+	z-index: 1000;
+	background-color: rgba(0, 0, 0, .25);
+	width: 100%;
+	display: flex;
+	/*justify-content: space-between;*/
+	/*padding: .5rem 5%;*/
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+	backdrop-filter: blur(4px);
+
+	& h1 {
+		margin: .5rem 0;
+	}
+
+	& nav {
+		display: flex;
+		gap: 0;
+		padding: 0;
+
+		& a {
+			text-decoration: none;
+			color: var(--fgc);
+			height: 100%;
+			padding: .5rem 1rem;
+		}
+
+		& a:hover {
+			background-color: rgba(0, 0, 0, .5);
+			transition: 0.25s ease;
+		}
+	}
+}
+
+/*#main {*/
+/*	background: url("images/dst1.jpg") no-repeat;*/
+/*	background-size: cover;*/
+/*	background-repeat: no-repeat;*/
+/*	backdrop-filter: round;*/
+/*}*/
+
+section {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	padding: 5% 20%;
+	background-color: gray;
+
+	&::before,
+	&::after {
+		content: "";
+		position: absolute;
+		width: 100%;
+		height: 500px;
+		z-index: 100;
+	}
+
+	&::before {
+		top: 0;
+		/*background: linear-gradient(black, black, transparent);*/
+		/*background: linear-gradient(black, transparent);*/
+	}
+
+	&::after {
+		bottom: 0;
+		/*background: linear-gradient(to top,black, black, transparent);*/
+		/*background: linear-gradient(to top,black, transparent);*/
+	}
+}
+
+footer {
+	margin: 0;
+	padding: 1rem;
+	text-align: center;
+	background-color: var(--bgc);
+
+	& * {
+		margin: 0;
+	}
+}
