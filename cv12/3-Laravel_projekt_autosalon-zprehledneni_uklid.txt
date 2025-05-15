@@ -1,0 +1,237 @@
+*****************************************************************
+
+V routes/web.php 
+SMAZAT 1:
+Route::get('/', function ()
+{
+    return view('welcome');
+})->middleware('auth');
+
+SMAZAT 2 (POKUD VÁŠ KÓD OBSAHUJE TUTO ČÁST):
+Route::get('/about', function () 
+{
+    return view('about');
+});
+
+*****************************************************************
+
+V routes/web.php 
+TOTO:
+Route::get('/home', 'HomeController@index')->name('home');
+
+Nahradit
+TÍMTO:
+Route::get('/', 'HomeController@index')->name('home');
+
+POZNÁMKA:
+home JE NYNÍ NOVÝ ROOT.
+
+*****************************************************************
+
+Pokud jste přihlášeni, pak na stránkách:
+http://localhost:8888/jmeno_studenta/autosalon/public/
+PROVÉST ODHLÁŠENÍ!!!
+
+*****************************************************************
+
+Do webového prohlížeče vložit adresu (provést REFRESH):
+
+http://localhost:8888/jmeno_studenta/autosalon/public/
+
+VÝSLEDEK:
+BYLI JSME PŘESMĚROVÁNI NA:
+http://localhost:8888/Jmeno_studenta/autosalon/public/login
+
+*****************************************************************
+
+Na webové stránce 
+http://localhost:8888/Jmeno_studenta/autosalon/public/login
+zadat přihlašovací údaje:
+admin@example.com
+password
+
+VÝSLEDEK:
+POKUD JSOU PŘIHLAŠOVACÍ ÚDAJE VYPLNĚNY SPRÁVNĚ
+BYLI JSME PŘESMĚROVÁNI NA STRÁNKU, KTEROU JSME PŮVODNĚ CHTĚLI NAVŠTÍVIT:
+http://localhost:8888/jmeno_studenta/autosalon/public/
+TOTO SE DĚJE AUTOMATICKY => NENÍ POTŘEBA TO PROGRAMOVAT.
+
+*****************************************************************
+
+POKRAČOVAT V PREZENTACI
+
+*****************************************************************
+
+Z resources/views/layouts/app.blade.php
+Okopírovat TOTO:
+                    <!-- Right Side Of Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Authentication Links -->
+                        @guest
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            </li>
+                            @if (Route::has('register'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                </li>
+                            @endif
+                        @else
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }} je zde
+                                    </a>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" 
+                                    style="display: none;">
+                                        @csrf
+                                    </form>
+                                </div>
+                            </li>
+                        @endguest
+                    </ul> 
+
+Nakopírovaným kódem (<ul>...</ul>) 
+V resources/views/includes/navbarblade.php 
+NAHRADIT TOTO:
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        
+POZNÁMKA:
+</form>...</form> BUDE SMAZÁN, PROTOŽE VYHLEDÁVÁNÍ NENÍ POTŘEBA.
+
+*****************************************************************
+
+MUSÍTE BÝT PŘIHLÁŠENI (admin@example.com, password) !!!
+
+Do webového prohlížeče vložit adresu (provést REFRESH):
+
+http://localhost:8888/jmeno_studenta/autosalon/public/cars
+
+VÝSLEDEK:
+NAVBAR V PRAVÉ ČÁSTI OBSAHUJE DROPDOWN 
+SE JMÉNEM UŽIVATELE (admin), KTERÝ OBSAHUJE ODHLÁŠENÍ (Logout je zde)
+
+*****************************************************************
+
+Pomocí menu položky "Logout je zde" provést odhlášení.
+
+VÝSLEDEK:
+BYLI JSME PŘESMĚROVÁNI NA:
+http://localhost:8888/Jmeno_studenta/autosalon/public/login
+
+POZNÁMKA:
+ZDE JE NAVBAR, KTERÝ JE AUTOMATICKY VYGENEROVANÝ
+=> NAHRADÍME HO NAŠIM NAVBAREM
+
+*****************************************************************
+
+V resources/views/auth/login.blade.php nahradit
+TOTO (1. řádek):
+@extends('layouts.app') 
+
+TÍMTO:
+@extends('layouts.adminLayout')
+
+*****************************************************************
+
+V resources/views/auth/register.blade.php nahradit
+TOTO (1. řádek):
+@extends('layouts.app') 
+
+TÍMTO:
+@extends('layouts.adminLayout')
+
+*****************************************************************
+
+V resources/views/home.blade.php nahradit
+TOTO (1. řádek):
+@extends('layouts.app') 
+
+TÍMTO:
+@extends('layouts.adminLayout')
+
+*****************************************************************
+
+Do webového prohlížeče postupně vložit ardesy (vždy provést REFRESH):
+
+http://localhost:8888/jmeno_studenta/autosalon/public/login
+http://localhost:8888/jmeno_studenta/autosalon/public/register
+
+VÝSLEDEK:
+OBĚ STRÁNKY OBSAHUJÍ NÁŠ NAVBAR
+
+*****************************************************************
+
+POKRAČOVAT V PREZENTACI
+
+*****************************************************************
+
+V resources/views/includes/navbarblade.php 
+TOTO:
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cars</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownId">
+                    <a class="dropdown-item" href="{{ route('cars.index') }}">List all</a>
+                    <a class="dropdown-item" href="{{ route('cars.create') }}">Create new</a>
+                </div>
+            </li>
+        
+Nahradit
+TÍMTO:
+            @auth
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cars</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownId">
+                    <a class="dropdown-item" href="{{ route('cars.index') }}">List all</a>
+                    <a class="dropdown-item" href="{{ route('cars.create') }}">Create new</a>
+                </div>
+            </li>
+            @endauth
+            
+POZNÁMKA:
+DROPDOWN JSME POUZE OBALILI TÍMTO:
+@auth
+@endauth
+
+*****************************************************************
+
+NESMÍTE BÝT PŘIHLÁŠENI !!!
+
+Do webového prohlížeče vložit adresu (provést REFRESH):
+
+http://localhost:8888/jmeno_studenta/autosalon/public/login
+
+VÝSLEDEK:
+DROPDOWN Cars NENÍ VIDITELNÝ
+
+*****************************************************************
+
+Do webového prohlížeče vložit adresu (provést REFRESH):
+
+http://localhost:8888/jmeno_studenta/autosalon/public/
+
+Na webové stránce 
+http://localhost:8888/jmeno_studenta/autosalon/public/login
+zadat přihlašovací údaje:
+admin@example.com
+password
+
+VÝSLEDEK:
+NA STRÁNCE http://localhost:8888/oulehla/autosalon/public/
+JE DROPDOWN Cars VIDITELNÝ
+
+*****************************************************************
+
+PROJEKT JE HOTOVÝ
+
+*****************************************************************

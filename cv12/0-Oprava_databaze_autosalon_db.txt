@@ -1,0 +1,129 @@
+*****************************************************************
+
+OPĚTOVNÉ VYTVOŘENÍ DATABÁZE autosalon_db
+
+*****************************************************************
+
+V phpMyAdmin musím být vytvořena DATABÁZE autosalon_db
+POKUD JI NEVIDÍTE, VYTVOŘTE JI.
+
+*****************************************************************
+
+VE VS CODE, V SOUBORU .ENV  ZKOTROLOVAT, ZDA MÁTE NASTAVENO:
+#
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=8889
+DB_DATABASE=autosalon_db
+DB_USERNAME=root
+DB_PASSWORD=root 
+#
+
+*****************************************************************
+
+K DATOVÉ ENTITĚ JE NEJPRVE NUTNÉ VYTVOŘIT MODELOVOU TŘÍDU
+(MOD.TŘ. REFLEKTUJE ODPOVÍDAJÍCÍ DATABÁZOVOU TABULKU):
+
+V terminálu 1:
+#
+cd /Applications/MAMP/htdocs/jmeno_studenta/autosalon
+#
+
+V terminálu 2:
+#
+php artisan make:model Car --migration
+#
+
+!!! POKUD SE OBJEVÍ CHYBOVÁ HLÁŠKA, OHLEDNĚ EXISTUJÍCÍ TŘÍDY Car A V PROJEKTU JIŽ EXISTUJE,
+JE POTŘEBA JI SMAZAT A POSTUP ZOPAKOVAT !!!
+
+Pokud proběhne vše správně, výstup terminálu by měl vypadat takto:
+Model created successfully.
+Created Migration: 2019_04_13_170154_create_cars_table
+
+Poznámka:
+--migration zajistí, že se vygeneruje nejen modelová třída Car 
+ale i migrační soubor ve, kterém je definováno, jak má vypadat migrační tabulka.
+
+*****************************************************************
+
+Ve VS Code kliknout na REFRESH (3. položka zleva) !!!
+Nyní máme vytvořeny 2 soubory:
+
+I.
+V ../jmeno_studenta/autosalon/app soubor (MODELOVÁ TŘÍDA):
+Car.php
+
+II.
+V .../jmeno_studenta/autosalon/database/migrations soubor:
+2019_04_13_170154_create_cars_table
+ 
+*****************************************************************
+
+V souboru .../jmeno_studenta/autosalon/database/migrations/2019_04_13_170154_create_cars_table
+
+TOTO:
+    public function up()
+    {
+        Schema::create('cars', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->timestamps();
+        });
+    }
+
+Nahradit tímto:
+    public function up()
+    {
+        Schema::create('cars', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('make');
+            $table->string('model');
+            $table->date('produced_on');
+            $table->timestamps();
+          });
+    }
+
+*****************************************************************
+
+Provedení migrace 
+ZE SOUBORU: /jmeno_studenta/autosalon/database/migrations/2019_04_13_170154_create_cars_table 
+DO DATABÁZE: autosalon_db
+
+V terminálu zadat příkaz:
+#
+php artisan migrate
+#
+
+Pokud proběhne vše správně, výstup terminálu by měl vypadat takto:
+Migration table created successfully.
+Migrating: 2014_10_12_000000_create_users_table
+UP: ENDMigrated:  2014_10_12_000000_create_users_table
+Migrating: 2014_10_12_100000_create_password_resets_table
+Migrated:  2014_10_12_100000_create_password_resets_table
+Migrating: 2019_04_13_170154_create_cars_table
+Migrated:  2019_04_13_170154_create_cars_table
+
+*****************************************************************
+
+DŮLEŽITÁ POZNÁMKA:
+POKUD JSOU PROVEDENY ZMĚNY V class NejakaTrida extends Migration, VE FUNKCI up()
+(TZN. MĚNÍ SE STRUKTURA TABULKY) 
+
+PAK OPAKOVANÉ POUŽITÍ PŘÍKAZU:
+php artisan migrate
+
+VRÁTÍ VÝSLEDEK:
+Nothing to migrate
+
+JE PROTO NUTNÉ POUŽÍT PŘÍKAZ:
+php artisan migrate:refresh
+KTERÝ: Rollback all migrations and run them all again
+
+POKUD POUŽÍVÁME SEEDY, JE POTŘEBA ZADAT PŘÍKAZ:
+php artisan migrate:refresh --seed
+
+*****************************************************************
+
+V phpMyAdmin se podívat do databáze autosalon_db
+
+*****************************************************************

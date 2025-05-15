@@ -1,0 +1,22 @@
+*****************************************************************
+
+Nyní do resources/views/layouts/adminLayout.blade.php 
+POD @include('includes.navbar')
+ZDVOJIT:
+    <!-- obsah -->
+    @yield('content')
+
+     <!-- obsah -->
+     @yield('content')
+   
+*****************************************************************
+
+Do webového prohlížeče vložit ardesu (REFRESH):
+
+I.
+http://localhost:8888/jmeno_studenta/autosalon/public/cars
+
+II.
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+
+*****************************************************************

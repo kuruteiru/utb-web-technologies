@@ -1,0 +1,531 @@
+*****************************************************************
+Ve VS Code otevřít adresář:
+
+/Applications/MAMP/htdocs/jmeno_studenta/autosalon
+
+*****************************************************************
+
+Smazat: 
+resources/views/cars/show.blade.php
+resources/views/about.blade.php
+
+Poznámka:
+v adresáři resources/views zůstane pouze: 
+1) soubor welcome.blade.php
+2) prázdný adresář cars
+
+*****************************************************************
+
+Smazat: 
+app/Http/Controllers/CarController.php
+
+*****************************************************************
+
+UKÁZAT JAK SNADNO ZLE PRACOVAT S DOKUMENTACÍ LARAVELU:
+https://laravel.com/docs/5.8 --> SEARCH --> controllers --> vybrat Resource Controllers:
+php artisan make:controller PhotoController --resource
+
+*****************************************************************
+
+V terminálu zadat:
+#
+php artisan make:controller CarController --resource
+#
+
+*****************************************************************
+
+V resources/views/cars vytvořit soubor:
+index.blade.php
+
+*****************************************************************
+
+app/Http/Controllers/CarController.php přepsat function index():
+
+    public function index()
+    {
+        return view('cars.index');
+    }
+
+*****************************************************************
+
+PODÍVAT SE DO PREZENTACE. 
+
+*****************************************************************
+
+Do souboru resources/views/cars/index.blade.php
+Vložit: 
+TEW CV11
+
+Spustit MAMP, spustit Apache a MySQL servery
+
+Do webového prohlížeče vložit ardesu:
+http://localhost:8888/jmeno_studenta/autosalon/public/cars
+
+*****************************************************************
+
+V resources/views vytvořit adresář:
+layouts
+
+*****************************************************************
+
+V resources/views/layouts vytvořit soubor:
+adminLayout.blade.php
+
+*****************************************************************
+
+Do souboru resources/views/layouts/adminLayout.blade.php vložit:
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Administrace</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+
+    <!-- navigace zde neni napevno v kodu-->
+    @include('includes.navbar')
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
+
+
+POZNÁMKA:
+JEDNÁ SE O b4-$ Bootstrap master template DO, KTERÉ BYL VLOŽEN ŘÁDEK:
+    <!-- navigace zde neni napevno v kodu-->
+    @include('includes.navbar')
+
+*****************************************************************
+
+V resources/views vytvořit adresář: 
+includes
+
+*****************************************************************
+
+V resources/views/includes vytvořit soubor: 
+navbar.blade.php
+
+*****************************************************************
+
+Do souboru resources/views/includes/navbar.blade.php vložit:
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
+    <a class="navbar-brand" href="#">Admin - autosalon</a>
+    <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavId">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cars</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownId">
+                    <a class="dropdown-item" href="#">List all</a>
+                    <a class="dropdown-item" href="#">Create new</a>
+                </div>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+
+*****************************************************************
+
+V souboru resources/views/cars/index.blade.php přepsat obsah
+TÍMTO:
+@extends('layouts.adminLayout')
+
+Soubor index.blade.php používá soubor resources/views/layouts/adminLayout.blade.php, 
+který includuje navbar pro administraci, definovaný v resources/views/includes/navbar.blade.php
+
+V PREZENTACI SE PODÍVAT NA SCHÉMA.
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesu (REFRESH):
+http://localhost:8888/jmeno_studenta/autosalon/public/cars
+
+*****************************************************************
+
+Do souboru resources/views/includes/navbar.blade.php do 
+class="dropdown-menu" VLOŽIT:
+                    <a class="dropdown-item" href="{{ route('cars.index') }}">List all</a>
+                    <a class="dropdown-item" href="{{ route('cars.create') }}">Create new</a>
+
+POZNÁMKY:
+TOTO JE ZÁPIS PRO VÝSTUP DO ŠABLONY: {{  }} 
+MŮŽETE SI TO PŘEDSTAVIT JAKO ZAVOLÁNÍ PHP SKRIPTU, 
+KDE SE ECHO POSTARÁ O VÝSTUP.
+JINÝMI SLOVY NA URČENÉ MÍSTO JE VYTIŠTĚN VÝSTUP.
+  
+LARAVEL MÁ POMOCNOU METODU route, KTERÁ UMÍ VRÁTIT URL ADRESU.
+TZN., ŽE NEMUSÍME ZADÁVAT KONKRÉTNÍ CELOU CESTU NAPŘ. /cars/create A NÁSLEDNĚ SE POTÝKAT S PROBLÉMY 
+RELATIVNÍHO ADRESOVÁNÍ
+
+METODA route UMOŽŇUJE CESTU GENEROVAT DYNAMICKY, TAKŽE UVEDEME POUZE JMÉNO ROUTE, NAPŘ.: route('cars.index'), KTERÁ SE V TOMTO PŘÍPADĚ TRANSFORMUJE DO ADRESY, JEŽ BUDE VE VÝSLEDNÉ HTML KÓDU:
+http://localhost:8888/jmeno_studenta/autosalon/public/cars 
+
+*****************************************************************
+
+PODÍVAT SE DO PREZENTACE
+
+*****************************************************************
+
+V app/Http/Controllers/CarController.php přepsat metodu create TÍMTO:
+
+    public function create()
+    {
+        return view('cars.create');
+    }
+
+*****************************************************************
+
+PODÍVAT SE DO PREZENTACE
+
+*****************************************************************
+
+V resources/views/cars vytvořit soubor:
+create.blade.php
+
+*****************************************************************
+
+Do souboru resources/views/cars/create.blade.php vložit:
+
+@extends('layouts.adminLayout')
+
+*****************************************************************
+
+V resources/views/cars/create.blade.php budeme vytvářet FORMULÁŘ.
+Neprve si určíme oblast, kde se bude formuláře nacházet:
+
+@section('content')
+*** ZDE BUDE CREATE FORM ***
+@endsection
+
+*****************************************************************
+
+Nyní do resources/views/layouts/adminLayout.blade.php 
+POD @include('includes.navbar')
+VLOŽIT:
+<!-- obsah -->
+@yield('content')
+
+POZNÁMKA:
+@yield ZNAMENÁ: VYPIŠ NA TOTO MÍSTO SEKCI, KTERÁ JE POJMENOVANÁ CONTENT
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesu (REFRESH):
+http://localhost:8888/jmeno_studenta/autosalon/public/cars
+
+Navbar --> Cars --> Create new 
+
+DOSTANEME SE NA ADRESU:
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+
+*****************************************************************
+
+DO resources/views/cars/create.blade.php 
+DO SEKCE @section('content')
+
+VLOŽIT:
+<div class="container">
+    <form action="{{ route('cars.store') }}" method="post">
+        @csrf
+
+        <div class="form-group">
+          <label for="make">Make</label>
+          <input type="text"
+            class="form-control" name="make" id="make" aria-describedby="helpId" placeholder="">
+          <small id="helpId" class="form-text text-muted">Car producer...</small>
+        </div>
+
+        <div class="form-group">
+            <label for="model">Model</label>
+            <input type="text"
+                class="form-control" name="model" id="model" aria-describedby="helpId" placeholder="">
+            <small id="helpId" class="form-text text-muted">Car model...</small>
+        </div>
+
+        <div class="form-group">
+            <label for="produced_on">Produced on</label>
+            <input type="date"
+                    class="form-control" name="produced_on" id="produced_on" aria-describedby="helpId" placeholder="">
+            <small id="helpId" class="form-text text-muted">Production date...</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+POZNÁMKA:
+JEDNÁ SE O ROUTE {{ route('cars.store') }}, VIZ PREZENTACE
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesu (REFRESH):
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+
+*****************************************************************
+
+DO resources/views/cars/create.blade.php 
+DO DIV <div class="container"> VLOŽIT:
+
+<h1>Create new car</h1>
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesu (REFRESH):
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+
+*****************************************************************
+
+V resources/views/cars/create.blade.php 
+TOTO NAHRADIT:
+<h1>Create new car</h1>
+
+TÍMTO (vytvoříme pro h1 místo, aby to nebylo tak "nahuštěné" na sebe):
+<h1 class="my-5">Create new car</h1>
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesu (REFRESH):
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+
+KLIKNOUT NA TLAČÍTKO "Submit"
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesu (REFRESH):
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+
+V Chrome Dev Tools otevřít panel Elements a ve form elementu najít intput type="hidden"
+
+V PREZENTACI VYSVĚTLIT, JAK TO SOUVISÍ S @csrf
+
+*****************************************************************
+
+Z resources/views/cars/create.blade.php 
+Z form ODSTRANIT:
+@csrf
+
+Do webového prohlížeče vložit ardesu --> REFRESH!!!:
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+KLIKNOUT NA TLAČÍTKO "Submit"
+
+DO resources/views/cars/create.blade.php 
+DO form VRÁTIT!!!:
+@csrf
+
+*****************************************************************
+
+PODÍVAT SE DO PREZENTACE
+
+*****************************************************************
+
+DO app/Http/Controllers/CarController.php 
+DO METODY store(Request $request)
+VLOŽIT: 
+       // server side validation
+        $validatedData = $request->validate([
+            'make' => 'required|max:255',
+            'model' => 'required|max:255',
+            'produced_on' => 'required|date',
+        ]);
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesu --> REFRESH!!!:
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+
+Vyplnit textové pole (input) "Make".
+OSTATNÍ POLE NEVYPLŇOVAT!!!
+
+KLIKNOUT NA TLAČÍTKO "Submit"
+
+*****************************************************************
+
+NIC SE NESTALO, FORMULÁŘ NENÍ VALIDNÍ, PROTO NEBYL ODESLÁN
+
+CHYBÝ VŠAK CHYBOVÁ ZPRÁVA PRO UŽIVATELE!
+
+PODÍVAT SE DO PREZENTACE
+
+*****************************************************************
+
+DO resources/views/cars/create.blade.php 
+MEZI h1 A form VLOŽIT KÓD PRO VÝPIS CHYB:
+ 
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesu --> REFRESH!!!:
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+
+Vyplnit textové pole (input) "Make".
+OSTATNÍ POLE NEVYPLŇOVAT!!!
+
+KLIKNOUT NA TLAČÍTKO "Submit"
+
+*****************************************************************
+
+DO app/Http/Controllers/CarController.php 
+POD ŘÁDEK use Illuminate\Http\Request;
+VLOŽIT: use \App\Car;
+
+ABYCHOM MOHLI POUŽÍVAT MODELOVOU TŘÍDU Car.
+
+NÁSLEDNĚ NA KONEC METODY store(Request $request) PŘIDAT:
+        $newCar = new Car();
+        $newCar->make = $request->make;
+        $newCar->model = $request->model;
+        $newCar->produced_on = $request->produced_on;
+        $newCar->save();
+    
+POZNÁMKA:
+POUŽÍVÁME SETTER DO NĚHOŽ POMOCÍ $request VKLÁDÁME  make
+Z FORMULÁŘE V resources/views/cars/create.blade.php:   
+$newCar->make = $request->make;
+
+*****************************************************************
+
+POZNÁMKA: 
+VŠIMNĚTE SI, ŽE MODELOVÁ TŘÍDA Car
+JE TÉMĚŘ PRÁZDNÁ, VŠECHNY DŮLEŽITÉ VĚCI DĚDÍ:
+<?php
+
+namespace App;
+use Illuminate\Database\Eloquent\Model;
+
+class Car extends Model
+{
+    //
+}
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesu --> REFRESH!!!:
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+
+VŠECHNY POLE KORENTNĚ VYPLNIT.
+
+KLIKNOUT NA TLAČÍTKO "Submit"
+
+*****************************************************************
+
+PODÍVAT SE DO PREZENTACE
+
+*****************************************************************
+
+DO app/Http/Controllers/CarController.php 
+DO METODY store(Request $request) PŘIDAT:
+
+        // redirect
+        return redirect(route('cars.index'));
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesu --> REFRESH!!!:
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+
+VŠECHNY POLE KORENTNĚ VYPLNIT.
+
+KLIKNOUT NA TLAČÍTKO "Submit"
+
+*****************************************************************
+
+DOSTALI JSME SE NA STRÁNKU http://localhost:8888/jmeno_studenta/autosalon/public/cars
+
+STRÁNKA MÁ SLOUŽIT PRO ZOBRAZENÍ VŠECH AUTOMOBILŮ
+
+ZATÍM OBSAHUJE POUZE NAVBAR
+
+=> MUSÍME UDĚLAT VÝPIS VŠECH AUTOMOBILŮ
+
+PROTOŽE JSME V CarController.php POUŽILY: 
+return redirect(route('cars.index'));
+
+VÝPIS VŠECH AUTOMOBILŮ BUDEME PROVÁDĚT V:
+resources/views/cars/index.blade.php
+
+*****************************************************************
+
+DO resources/views/cars/index.blade.php přidat:
+@section('content')
+    <ul class="list-group">
+        @foreach($allCars as $car)
+            <li class="list-group-item">{{ $car->make }} {{ $car->model }}</li>
+        @endforeach
+    </ul>
+@endsection
+
+POZNÁMKA:
+DO foreach POTŘEBUJEME VLOŽIT POLE VŠECH AUTOMOBILŮ.
+POLE VŠECH AUTOMOBILŮ SI POŠLEME Z CarController.php Z METODY index().
+=> MUSÍME V CarController.php  MUSÍME UPRAVIT METODU index().
+
+*****************************************************************
+
+DO app/Http/Controllers/CarController.php 
+METODU index() ZMĚNIT 
+Z TOHOTO:
+    public function index()
+    {
+        return view('cars.index');
+    }
+    
+NA TOTO:
+    public function index()
+    {
+        $allCars = Car::all();
+        return view('cars.index', [ 'allCars' => $allCars ]);
+    }
+
+*****************************************************************
+
+PODÍVAT SE DO PREZENTACE
+
+*****************************************************************
+
+DO WEBOVÉHO PROHLÍŽEČE VLOŽIT ARDESU --> REFRESH!!!:
+http://localhost:8888/jmeno_studenta/autosalon/public/cars
+
+V NAVBAR VYBRAT --> Cars --> Create new
+
+DOSTANEME SE NA STRÁNKU:
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+
+VŠECHNY POLE KORENTNĚ VYPLNIT.
+
+KLIKNOUT NA TLAČÍTKO "Submit"
+
+*****************************************************************
+
+PROJEKT JE HOTOVÝ
+
+*****************************************************************

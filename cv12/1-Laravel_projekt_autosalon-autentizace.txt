@@ -1,0 +1,54 @@
+*****************************************************************
+Ve VS Code otevřít adresář:
+
+/Applications/MAMP/htdocs/jmeno_studenta/autosalon
+
+*****************************************************************
+
+V terminálu zadat (VS Code --> View --> Terminal):
+#
+php artisan make:auth
+#
+
+Výsledek:
+Authentication scaffolding generated successfully.
+
+*****************************************************************
+
+POKRAČOVAT V PREZENTACI
+
+*****************************************************************
+
+!!! Spustit MAMP, spustit Apache a MySQL servery !!!
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesy:
+
+http://localhost:8888/jmeno_studenta/autosalon/public/login
+http://localhost:8888/jmeno_studenta/autosalon/public/register
+
+http://localhost:8888/oulehla/autosalon/public/
+ZDE V PRAVÉM HORNÍM ROHU PŘIBYLY ODKAZY:
+LOGIN A REGISTER --> KLIKNOUT NA TYTO ODKAZY
+
+*****************************************************************
+
+POKRAČOVAT V PREZENTACI
+
+*****************************************************************
+
+Do webového prohlížeče vložit ardesy:
+http://localhost:8888/oulehla/autosalon/public/register
+
+Provést registraci:
+admin
+admin@example.com
+password
+password
+
+*****************************************************************
+
+POKRAČOVAT V PREZENTACI
+
+*****************************************************************

@@ -1,0 +1,110 @@
+*****************************************************************
+
+Ve VS Code je stále otevřen adresář:
+
+/Applications/MAMP/htdocs/jmeno_studenta/autosalon
+
+*****************************************************************
+
+Z app/Http/Controllers/HomeController.php
+okopírovat konstruktor:
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
+OKOPÍROVANÝ kontruktor vložit
+DO: app/Http/Controllers/CarController.php
+
+POZNÁMKA:
+JE TO MOŽNÉ, PROTOŽE V CarController.php ZATÍM NENÍ ŽÁDNÝ KONSTRUKTOR
+
+*****************************************************************
+
+Na stránkách:
+http://localhost:8888/jmeno_uzivatele/autosalon/public/home
+PROVÉST ODHLÁŠENÍ!!!
+
+*****************************************************************
+
+Do webového prohlížeče postupně vložit ardesy (vždy provést REFRESH):
+
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/create
+http://localhost:8888/jmeno_studenta/autosalon/public/cars
+
+VÝSLEDEK:
+VŽDY JSME BYLI PŘESMĚROVÁNI NA:
+http://localhost:8888/Jmeno_studenta/autosalon/public/login
+
+*****************************************************************
+
+Na webové stránce 
+http://localhost:8888/Jmeno_studenta/autosalon/public/login
+zadat přihlašovací údaje:
+admin@example.com
+password
+
+VÝSLEDEK:
+POKUD JSOU PŘIHLAŠOVACÍ ÚDAJE VYPLNĚNY SPRÁVNĚ
+BYLI JSME PŘESMĚROVÁNI NA STRÁNKU, KTEROU JSME PŮVODNĚ CHTĚLI NAVŠTÍVIT:
+http://localhost:8888/jmeno_studenta/autosalon/public/cars
+TOTO SE DĚJE AUTOMATICKY => NENÍ POTŘEBA TO PROGRAMOVAT.
+
+*****************************************************************
+
+POKRAČOVAT V PREZENTACI
+
+*****************************************************************
+
+V routes/web.php 
+TOTO:
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Upravit na TOTO:
+Route::get('/', function ()
+{
+    return view('welcome');
+})->middleware('auth');
+
+POZNÁMKA:
+BYLO PŘIDÁNO VOLÁNÍ: ->middleware('auth');
+
+*****************************************************************
+
+Na stránkách:
+http://localhost:8888/jmeno_uzivatele/autosalon/public/home
+PROVÉST ODHLÁŠENÍ!!!
+
+*********************************************************************
+
+Do webového prohlížeče vložit ardesu (REFRESH):
+
+http://localhost:8888/jmeno_studenta/autosalon/public/
+
+*****************************************************************
+
+Na webové stránce 
+http://localhost:8888/jmeno_studenta/autosalon/public/login
+zadat přihlašovací údaje:
+admin@example.com
+password
+
+VÝSLEDEK:
+POKUD JSOU PŘIHLAŠOVACÍ ÚDAJE VYPLNĚNY SPRÁVNĚ
+BYLI JSME PŘESMĚROVÁNI NA STRÁNKU, KTEROU JSME PŮVODNĚ CHTĚLI NAVŠTÍVIT:
+http://localhost:8888/jmeno_studenta/autosalon/public/
+TOTO SE DĚJE AUTOMATICKY => NENÍ POTŘEBA TO PROGRAMOVAT.
+
+*****************************************************************
+
+POKRAČOVAT V PREZENTACI
+
+*****************************************************************

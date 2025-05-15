@@ -1,0 +1,272 @@
+!!! POZOR !!
+V phpMyAdmin musím být vytvořena databáze autosalon_db
+
+*****************************************************************
+
+Ve VS Code, v souboru .env  nastavit:
+#
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=8889
+DB_DATABASE=autosalon_db
+DB_USERNAME=root
+DB_PASSWORD=root 
+#
+
+*****************************************************************
+
+POKUD VYTVÁŘÍTE ROZSÁHLÝ INFORMAČNÍ SYSTÉM MĚLY BY JSTE JEHO NÁVRH ZAČÍT DATOVÝMI ENTITAMI. 
+NAPŘÍKLAD WEB AUTOSALÓNU  BY MĚL MÍT DATOVOU ENTITU *Car* REPREZENTUJÍCÍ AUTOMOBIL.
+
+*****************************************************************
+
+K DATOVÉ ENTITĚ JE NEJPRVE NUTNÉ VYTVOŘIT MODELOVOU TŘÍDU
+(MOD.TŘ. REFLEKTUJE ODPOVÍDAJÍCÍ DATABÁZOVOU TABULKU):
+
+V terminálu 1:
+#
+cd /Applications/MAMP/htdocs/jmeno_studenta/autosalon
+#
+
+V terminálu 2:
+#
+php artisan make:model Car --migration
+#
+
+Pokud proběhne vše správně, výstup terminálu by měl vypadat takto:
+Model created successfully.
+Created Migration: 2019_04_13_170154_create_cars_table
+
+Poznámka:
+--migration zajistí, že se vygeneruje nejen modelová třída Car 
+ale i migrační soubor ve, kterém je definováno, jak má vypadat migrační tabulka.
+
+*****************************************************************
+
+Ve VS Code kliknout na REFRESH (3. položka zleva) !!!
+Nyní máme vytvořeny 2 soubory:
+
+I.
+V ../jmeno_studenta/autosalon/app soubor (MODELOVÁ TŘÍDA):
+Car.php
+
+I KDYŽ TOHO SOUBOR MOC NEOBSAHUJE, TŘÍDA Car DĚDÍ METODY Z TŘÍDY MODEL.
+TZN., ŽE TŘÍDA Car MŮŽA POUŽÍVAT METODY Eloquent Modelu.
+
+II.
+V .../jmeno_studenta/autosalon/database/migrations soubor:
+2019_04_13_170154_create_cars_table
+ 
+*****************************************************************
+
+V souboru .../jmeno_studenta/autosalon/database/migrations/2019_04_13_170154_create_cars_table
+
+TOTO:
+    public function up()
+    {
+        Schema::create('cars', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->timestamps();
+        });
+    }
+
+Nahradit tímto:
+    public function up()
+    {
+        Schema::create('cars', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('make');
+            $table->string('model');
+            $table->date('produced_on');
+            $table->timestamps();
+          });
+    }
+
+*****************************************************************
+
+Provedení migrace 
+ZE SOUBORU: /jmeno_studenta/autosalon/database/migrations/2019_04_13_170154_create_cars_table 
+DO DATABÁZE: autosalon_db
+
+V terminálu zadat příkaz:
+#
+php artisan migrate
+#
+
+Pokud proběhne vše správně, výstup terminálu by měl vypadat takto:
+Migration table created successfully.
+Migrating: 2014_10_12_000000_create_users_table
+UP: ENDMigrated:  2014_10_12_000000_create_users_table
+Migrating: 2014_10_12_100000_create_password_resets_table
+Migrated:  2014_10_12_100000_create_password_resets_table
+Migrating: 2019_04_13_170154_create_cars_table
+Migrated:  2019_04_13_170154_create_cars_table
+
+*****************************************************************
+
+DŮLEŽITÁ POZNÁMKA:
+POKUD JSOU PROVEDENY ZMĚNY V class NejakaTrida extends Migration, VE FUNKCI up()
+(TZN. MĚNÍ SE STRUKTURA TABULKY) 
+
+PAK OPAKOVANÉ POUŽITÍ PŘÍKAZU:
+php artisan migrate
+
+VRÁTÍ VÝSLEDEK:
+Nothing to migrate
+
+JE PROTO NUTNÉ POUŽÍT PŘÍKAZ:
+php artisan migrate:refresh
+KTERÝ: Rollback all migrations and run them all again
+
+POKUD POUŽÍVÁME SEEDY, JE POTŘEBA ZADAT PŘÍKAZ:
+php artisan migrate:refresh --seed
+
+*****************************************************************
+
+V phpMyAdmin se podívat do databáze autosalon_db
+
+*****************************************************************
+
+V phpMyAdmin DO TABULKY cars DATABAZE autosalon_db vložit 3 řádky:
+http://localhost:8888/phpMyAdmin/index.php --> autosalon_db --> Table cars --> 
+--> záložka SQL --> vložit SQL kód:
+
+--
+-- VLOZENI DAT DO TABULKY cars DATABAZE autosalon_db
+-- 
+-- STRUKTURA TABULKY cars :
+-- id   make   model   produced_on   created_at   updated_at
+-- NEVYPLNUJEME: id (AUTO_INCREMENT), created_at, updated_at, JSOU VYPLNOVÁNA AUTOMATICKY
+--
+
+INSERT INTO cars (make,model,produced_on) VALUES 
+('make01','model01','2010-10-01'),
+('make02','model02','2011-11-02'),
+('make03','model00','2012-12-03');
+
+!!! KLIKNOUT NA TLAČÍTKO "Go" !!!
+
+*****************************************************************
+
+VE FW LARAVEL JE OBJEKTU JAKÝM JE NAPŘÍKLAD Car, POVAŽOVANÝ ZA RESOURCE (ZDROJ).
+Resource controller SLOUŽÍ PRO ZPRACOVÁNÍ VŠECH POŽADAVKŮ TÝKAJÍCÍCH SE  DANÉHO ZDROJE.
+PROTO BUDEME POMOCÍ PŘÍKAZU artisan VYTVÁŘET resource controller - V TERMINÁLU:
+
+#
+# cd /Applications/MAMP/htdocs/jmeno_studenta/autosalon
+php artisan make:controller CarController
+#
+
+Pokud proběhne vše správně, výstup terminálu by měl vypadat takto:
+Controller created successfully.
+
+PŘÍKAZ VYGENERUJE SOUBOR app/Http/Controllers/CarController.php
+
+*****************************************************************
+
+NYNÍ JE MOŽNÉ DEFINOVAT ROUTE (CESTU), KTERÁ PŘIŘADÍ URČÍTÉ 
+URL ADRESY ČINNOSTEM CarControlleru.
+
+V souboru: routes/web.php 
+vložíme kód spojující resource s controllerem, tzn. route:
+
+Route::resource('cars', 'CarController');
+
+*****************************************************************
+
+VYTVOŘENÍ KONTROLERU NA PROHLÉDNUTÍ URČITÉHO AUTA PODLE ZADANÉHO ID:
+
+URL BUDE MÍT TVAR:
+http://app.url/cars/{car}
+
+KDE {car} PŘEDSTAVUJE id V TABULCE cars DATABÁZE autosalon_db, NAPŘÍKLAD 
+http://app.url/cars/1 
+VRÁTÍ PRVNÍ AUTOMOBIL (id=1), KTERÝ JE ULOŽEN V TABULCE cars
+
+AKCI PROVEDEME VE DVOU KROCÍCH:
+I. POUŽIJTE Car model  PRO ZÍSKÁNÍ OBJEKTU Car Z DATABÁZE.
+II. NAČTENÍ view (ŠABLONA) POMOCÍ KTERÉHO BUDE VYTVOŘENA 
+    WEBOVÁ STRÁNKA, DO NÍŽ BUDOU VLOŽENA DATA Z Car OBJEKTU.
+
+*****************************************************************
+
+KROK I.: Editace soubor app/Http/Controllers/CarController.php
+
+Přidat use App\Car; (NYNÍ NEPROVÁDĚT!!!)
+
+Přidat funkci/metodu show($id) (NYNÍ NEPROVÁDĚT!!!)
+    public function show($id)
+    {
+      $car = Car::find($id);
+      return view('cars.show', array('car' => $car));
+    }
+
+!!! PŮVODNÍ KÓD SOUBORU app/Http/Controllers/CarController.php
+NAHRADIT TÍMTO !!!:
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Car;
+
+class CarController extends Controller
+{
+    public function show($id)
+    {
+      $car = Car::find($id);
+      return view('cars.show', array('car' => $car));
+    }
+}
+
+*****************************************************************
+
+TÍM, ŽE JSME V SOUBORU app/Http/Controllers/CarController.php JAKO view OZNAČILI cars.show
+VIZ: return view('cars.show', array('car' => $car));
+
+Laravelu ŘÍKÁME, ŽE V resources/views BUDE:
+PODADRESÁŘ cars A NĚM BUDE SOUBOR show.blade.php
+
+*****************************************************************
+
+Ve VS Code v resources/views vytvořit adresář "cars"
+
+Postup:
+Ve VS Code v levém navigačním okně kliknout prav. tl. myši na 
+resources/views a vybrat nabídku New Folder --> cars
+
+*****************************************************************
+
+V adresáři resources/views/cars vytvořit soubor:
+show.blade.php
+
+*****************************************************************
+
+Do souboru resources/views/cars/show.blade.php vložit:
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Car {{ $car->id }}</title>
+  </head>
+  <body>
+    <h1>Car {{ $car->id }}</h1>
+    <ul>
+      <li>Make: {{ $car->make }}</li>
+      <li>Model: {{ $car->model }}</li>
+      <li>Produced on: {{ $car->produced_on }}</li>
+    </ul>
+  </body>
+</html>
+
+*****************************************************************
+
+Ve webovém prohlížeči zadat adresu:
+
+http://localhost:8888/jmeno_studenta/autosalon/public/cars/1
+
+*****************************************************************
+
+POKRAČOVAT V PREZENTACI
+
+*****************************************************************
